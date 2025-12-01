@@ -1,0 +1,20 @@
+@model FruitShopReborn.Models.Ai.AiViewModel
+
+@{
+    ViewBag.Title = "Ai";
+    Layout = "_Layout";
+}
+
+@Html.Raw(TempData["Response"])
+<form method="post" asp-controller="Ai" asp-action="AskAi">
+    <div class="form-group">
+        <label asp-for="Prompt">Question:</label>
+        <input asp-for="Prompt" class="form-control"/>
+        <span asp-validation-for="Prompt" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
