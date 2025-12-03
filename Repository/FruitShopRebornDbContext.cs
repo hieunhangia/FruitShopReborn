@@ -1,3 +1,4 @@
+using Core;
 using Core.Entities.AiChat;
 using Core.Entities.Users;
 using Core.Entities.Users.Staffs;
@@ -22,41 +23,161 @@ public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext>
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<User>(e =>
-        {
-            e.UseTptMappingStrategy();
-            
-            e.Property(u => u.Status)
-                .HasConversion<string>();
-        });
-        
-        modelBuilder.Entity<ShippingInformation>(e =>
-        {
-            e.Property(s => s.PhoneNumber)
-                .IsFixedLength();
-            
-            e.Property(s => s.CommuneWardCode)
-                .IsFixedLength();
-        });
+        ConfigureUser(modelBuilder);
+        ConfigureCustomer(modelBuilder);
+        ConfigureShippingInformation(modelBuilder);
+        ConfigureStaff(modelBuilder);
+        ConfigureAiConversation(modelBuilder);
+        ConfigureAiChatMessage(modelBuilder);
+    }
 
-        modelBuilder.Entity<Staff>(e =>
-        {
-            e.UseTptMappingStrategy();
-            
-            e.Property(s => s.IdentityNumber)
-                .IsFixedLength();
-            
-            e.Property(s => s.PhoneNumber)
-                .IsFixedLength();
+    private static void ConfigureUser(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<User>();
+        entity.UseTptMappingStrategy();
+        entity.HasKey(u => u.Id);
+        entity.Property(u => u.Id).ValueGeneratedOnAdd();
+        entity.HasIndex(u => u.Email).IsUnique();
 
-            e.Property(s => s.CommuneWardCode)
-                .IsFixedLength();
-        });
-        
-        modelBuilder.Entity<AiChatMessage>(e =>
-        {
-            e.Property(c => c.Role)
-                .HasConversion<string>();
-        });
+        entity.Property(u => u.Email)
+            .HasMaxLength(BussinessRuleConstant.EmailMaxLength)
+            .IsUnicode(false)
+            .IsRequired();
+
+        entity.Property(u => u.PasswordHash)
+            .HasMaxLength(BussinessRuleConstant.PasswordHashMaxLength)
+            .IsUnicode(false);
+
+        entity.Property(u => u.Status)
+            .HasConversion<string>()
+            .HasMaxLength(BussinessRuleConstant.UserStatusMaxLength)
+            .IsUnicode(false)
+            .IsRequired();
+
+        entity.Property(u => u.CreatedAt).IsRequired();
+        entity.Property(u => u.UpdatedAt).IsRequired();
+    }
+
+    private static void ConfigureCustomer(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<Customer>();
+
+        entity.HasOne(c => c.DefaultShippingInformation)
+            .WithMany()
+            .HasForeignKey(c => c.DefaultShippingInformationId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        entity.HasMany(c => c.ShippingInformations)
+            .WithOne(s => s.Customer)
+            .HasForeignKey(s => s.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        entity.HasMany(c => c.Conversations)
+            .WithOne(conversation => conversation.Customer)
+            .HasForeignKey(conversation => conversation.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    private static void ConfigureShippingInformation(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<ShippingInformation>();
+        entity.HasKey(s => s.Id);
+
+        entity.Property(s => s.FullName)
+            .HasMaxLength(BussinessRuleConstant.FullNameMaxLength)
+            .IsRequired();
+
+        entity.Property(s => s.PhoneNumber)
+            .HasMaxLength(BussinessRuleConstant.PhoneNumberLength)
+            .IsUnicode(false)
+            .IsFixedLength()
+            .IsRequired();
+
+        entity.Property(s => s.CommuneWardCode)
+            .HasMaxLength(BussinessRuleConstant.CommuneWardCodeLength)
+            .IsUnicode(false)
+            .IsFixedLength()
+            .IsRequired();
+
+        entity.Property(s => s.DetailAddress)
+            .HasMaxLength(BussinessRuleConstant.DetailAddressMaxLength)
+            .IsRequired();
+
+        entity.HasOne(s => s.Customer)
+            .WithMany(c => c.ShippingInformations)
+            .HasForeignKey(s => s.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    private static void ConfigureStaff(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<Staff>();
+        entity.UseTptMappingStrategy();
+        entity.HasIndex(s => s.IdentityNumber).IsUnique();
+        entity.HasIndex(s => s.PhoneNumber).IsUnique();
+
+        entity.Property(s => s.FullName)
+            .HasMaxLength(BussinessRuleConstant.FullNameMaxLength)
+            .IsRequired();
+
+        entity.Property(s => s.IdentityNumber)
+            .HasMaxLength(BussinessRuleConstant.IdentityNumberMaxLength)
+            .IsUnicode(false)
+            .IsFixedLength()
+            .IsRequired();
+
+        entity.Property(s => s.PhoneNumber)
+            .HasMaxLength(BussinessRuleConstant.PhoneNumberLength)
+            .IsUnicode(false)
+            .IsFixedLength()
+            .IsRequired();
+
+        entity.Property(s => s.CommuneWardCode)
+            .HasMaxLength(BussinessRuleConstant.CommuneWardCodeLength)
+            .IsUnicode(false)
+            .IsFixedLength()
+            .IsRequired();
+
+        entity.Property(s => s.DetailAddress)
+            .HasMaxLength(BussinessRuleConstant.DetailAddressMaxLength)
+            .IsRequired();
+
+        entity.Property(s => s.HireDate)
+            .IsRequired();
+    }
+
+    private static void ConfigureAiConversation(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<AiConversation>();
+        entity.HasKey(c => c.Id);
+        entity.Property(c => c.CreatedAt).IsRequired();
+
+        entity.HasOne(c => c.Customer)
+            .WithMany(customer => customer.Conversations)
+            .HasForeignKey(c => c.CustomerId)
+            .OnDelete(DeleteBehavior.Cascade);
+    }
+
+    private static void ConfigureAiChatMessage(ModelBuilder modelBuilder)
+    {
+        var entity = modelBuilder.Entity<AiChatMessage>();
+        entity.HasKey(m => m.Id);
+
+        entity.Property(m => m.Role)
+            .HasConversion<string>()
+            .HasMaxLength(BussinessRuleConstant.AiChatMessageRoleMaxLength)
+            .IsUnicode(false)
+            .IsRequired();
+
+        entity.Property(m => m.Content)
+            .HasMaxLength(BussinessRuleConstant.AiChatMessageContentMaxLength)
+            .IsRequired();
+
+        entity.Property(m => m.CreatedAt).IsRequired();
+
+        entity.HasOne(m => m.ChatHistory)
+            .WithMany(c => c.Messages)
+            .HasForeignKey(m => m.ChatHistoryId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

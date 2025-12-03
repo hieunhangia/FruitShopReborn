@@ -1,4 +1,3 @@
-using Core;
 using Core.Extensions;
 using Core.Interfaces.Services;
 using Markdig;
