@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Core.Entities.Users;
+using Repository.Entities.Users;
 
-namespace Core.Entities.Ai;
+namespace Repository.Entities.Ai;
 
 public class AiConversation
 {

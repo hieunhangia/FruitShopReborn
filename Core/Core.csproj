@@ -7,8 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Entities\Orders\" />
-      <Folder Include="Entities\Products\" />
       <Folder Include="Interfaces\Repositories\" />
     </ItemGroup>
 

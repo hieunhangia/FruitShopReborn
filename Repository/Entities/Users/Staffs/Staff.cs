@@ -1,17 +1,21 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using Core;
 using Microsoft.EntityFrameworkCore;
 
-namespace Core.Entities.Users;
+namespace Repository.Entities.Users.Staffs;
 
-public class ShippingInformation
+[Index(nameof(IdentityNumber), IsUnique = true)]
+[Index(nameof(PhoneNumber), IsUnique = true)]
+public abstract class Staff : User
 {
-    [Key]
-    public int Id { get; set; }
-    
     [Required]
     [MaxLength(BussinessRuleConstant.FullNameMaxLength)]
     public string? FullName { get; set; }
+    
+    [Required]
+    [MaxLength(BussinessRuleConstant.IdentityNumberMaxLength)]
+    [Unicode(false)]
+    public string? IdentityNumber { get; set; }
     
     [Required]
     [MaxLength(BussinessRuleConstant.PhoneNumberLength)]
@@ -27,8 +31,6 @@ public class ShippingInformation
     [MaxLength(BussinessRuleConstant.DetailAddressMaxLength)]
     public string? DetailAddress { get; set; }
     
-    public int CustomerId { get; set; }
-    [ForeignKey(nameof(CustomerId))]
-    [DeleteBehavior(DeleteBehavior.Cascade)]
-    public Customer? Customer { get; set; }
+    [Required]
+    public DateTime HireDate { get; set; }
 }

@@ -5,6 +5,7 @@ using Markdig;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
+using Repository;
 using Service;
 
 var builder = WebApplication.CreateBuilder(args);

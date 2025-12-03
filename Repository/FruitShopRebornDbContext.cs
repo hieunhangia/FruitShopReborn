@@ -1,10 +1,9 @@
-using Core.Entities.Ai;
-using Core.Entities.Users;
-using Core.Entities.Users.Staffs;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.SemanticKernel.ChatCompletion;
+using Repository.Entities.Ai;
+using Repository.Entities.Users;
+using Repository.Entities.Users.Staffs;
 
-namespace Core;
+namespace Repository;
 
 public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext> options) : DbContext(options)
 {

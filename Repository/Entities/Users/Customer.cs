@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using Core.Entities.Ai;
 using Microsoft.EntityFrameworkCore;
+using Repository.Entities.Ai;
 
-namespace Core.Entities.Users;
+namespace Repository.Entities.Users;
 
 public class Customer : User
 {

@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Core;
 using Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace Core.Entities.Users;
+namespace Repository.Entities.Users;
 
 [Index(nameof(Email), IsUnique = true)]
 public abstract class User
