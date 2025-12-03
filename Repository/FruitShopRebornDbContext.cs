@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Repository.Entities.Ai;
+using Repository.Entities.AiChat;
 using Repository.Entities.Users;
 using Repository.Entities.Users.Staffs;
 

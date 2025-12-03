@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
-using Repository.Entities.Ai;
+using Repository.Entities.AiChat;
 
 namespace Repository.Entities.Users;
 
