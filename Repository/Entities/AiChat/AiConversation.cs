@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Repository.Entities.Users;
 
-namespace Repository.Entities.Ai;
+namespace Repository.Entities.AiChat;
 
 public class AiConversation
 {
