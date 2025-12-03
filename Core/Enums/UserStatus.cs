@@ -2,8 +2,8 @@ namespace Core.Enums;
 
 public enum UserStatus
 {
-    Inactive = 0,
-    Active = 1,
-    Suspended = 2,
-    Deleted = 3
+    Inactive,
+    Active,
+    Suspended,
+    Deleted
 }

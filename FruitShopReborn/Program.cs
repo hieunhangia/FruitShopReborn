@@ -1,13 +1,13 @@
+using Core;
+using Core.Extensions;
 using Core.Interfaces.Services;
 using Markdig;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.SemanticKernel;
-using Repository;
+using Microsoft.SemanticKernel.ChatCompletion;
+using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
 using Service;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Configuration.AddJsonFile("appsecrets.json", optional: true, reloadOnChange: true);
 
 // Add services to the container.
 builder.Services.AddDistributedMemoryCache();
@@ -27,32 +27,32 @@ builder.Services.AddDbContext<FruitShopRebornDbContext>(options =>
 
 builder.Services.AddSingleton(new MarkdownPipelineBuilder()
     .UseAdvancedExtensions()
+    .UseTargetBlankUrl()
     .Build());
 
-builder.Services.AddAzureOpenAIChatCompletion(
-    builder.Configuration["AzureOpenAIChatCompletionDeploymentName"] ?? "",
-    builder.Configuration["AzureOpenAIEndpoint"] ?? "",
-    builder.Configuration["AzureOpenAIKey"] ?? ""
+builder.Services.AddSingleton<IChatCompletionService>(
+    new AzureOpenAIChatCompletionService(
+        builder.Configuration["AzureOpenAIChatCompletionDeploymentName"]!,
+        builder.Configuration["AzureOpenAIEndpoint"]!,
+        builder.Configuration["AzureOpenAIApiKey"]!
+    )
 );
 
 builder.Services.AddSingleton<IAiService,AiService>();
 
 var app = builder.Build();
 
-// Apply migrations and seed database
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     try
     {
-        var context = services.GetRequiredService<FruitShopRebornDbContext>();
-        
-        context.Database.Migrate();
+        services.GetRequiredService<FruitShopRebornDbContext>().Database.EnsureCreated();
     }
     catch (Exception ex)
     {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+        services.GetRequiredService<ILogger<Program>>()
+            .LogError(ex, "An error occurred while creating the database.");
     }
 }
 
