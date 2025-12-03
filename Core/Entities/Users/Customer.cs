@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Core.Entities.AiChat;
 using Microsoft.EntityFrameworkCore;
-using Repository.Entities.AiChat;
 
-namespace Repository.Entities.Users;
+namespace Core.Entities.Users;
 
 public class Customer : User
 {

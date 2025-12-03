@@ -1,7 +1,7 @@
+using Core.Entities.AiChat;
+using Core.Entities.Users;
+using Core.Entities.Users.Staffs;
 using Microsoft.EntityFrameworkCore;
-using Repository.Entities.AiChat;
-using Repository.Entities.Users;
-using Repository.Entities.Users.Staffs;
 
 namespace Repository;
 

@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Core;
 using Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repository.Entities.AiChat;
+namespace Core.Entities.AiChat;
 
 public class AiChatMessage
 {
