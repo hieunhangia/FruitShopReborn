@@ -4,7 +4,7 @@ using Core;
 using Core.Enums;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repository.Entities.Ai;
+namespace Repository.Entities.AiChat;
 
 public class AiChatMessage
 {
