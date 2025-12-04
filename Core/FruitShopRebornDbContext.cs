@@ -1,10 +1,9 @@
-using Core;
 using Core.Entities.AiChat;
 using Core.Entities.Users;
 using Core.Entities.Users.Staffs;
 using Microsoft.EntityFrameworkCore;
 
-namespace Repository;
+namespace Core;
 
 public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext> options) : DbContext(options)
 {
@@ -47,6 +46,8 @@ public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext>
         entity.Property(u => u.PasswordHash)
             .HasMaxLength(BussinessRuleConstant.PasswordHashMaxLength)
             .IsUnicode(false);
+
+        entity.Ignore(u => u.Role);
 
         entity.Property(u => u.Status)
             .HasConversion<string>()
