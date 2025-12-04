@@ -7,6 +7,6 @@ public class ShippingInformation
     public string? PhoneNumber { get; set; }
     public string? CommuneWardCode { get; set; }
     public string? DetailAddress { get; set; }
-    public int CustomerId { get; set; }
+    public string? CustomerId { get; set; }
     public Customer? Customer { get; set; }
 }

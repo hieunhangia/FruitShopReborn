@@ -3,6 +3,8 @@ namespace Core;
 public static class BussinessRuleConstant
 {
     public const int EmailMaxLength = 255;
+    public const int PasswordMinLength = 8;
+    public const int PasswordMaxLength = 255;
     public const int PasswordHashMaxLength = 255;
     public const int UserStatusMaxLength = 20;
     public const int CommuneWardCodeLength = 6;

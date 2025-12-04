@@ -1,12 +1,10 @@
 using Core.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace Core.Entities.Users;
 
-public abstract class User
+public class User : IdentityUser
 {
-    public int Id { get; set; }
-    public string? Email { get; set; }
-    public string? PasswordHash { get; set; }
     public string Role => GetType().Name;
     public UserStatus Status { get; set; } = UserStatus.Active;
     public DateTime? LastLogin { get; set; }

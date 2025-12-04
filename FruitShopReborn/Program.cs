@@ -1,10 +1,14 @@
+using Core;
+using Core.Entities.Users;
 using Core.Extensions;
+using Core.Interfaces.Repositories;
 using Core.Interfaces.Services;
 using Markdig;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.AzureOpenAI;
-using Repository;
+using Repository.Repositories;
 using Service;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +29,26 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddDbContext<FruitShopRebornDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddIdentity<User, IdentityRole>(options => 
+    {
+        options.Password.RequiredLength = BussinessRuleConstant.PasswordMinLength;
+
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+    
+        options.User.RequireUniqueEmail = true; 
+    })
+    .AddEntityFrameworkStores<FruitShopRebornDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/Login";
+    options.LogoutPath = "/Logout";
+    options.AccessDeniedPath = "/AccessDenied";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+});
+
 builder.Services.AddSingleton(new MarkdownPipelineBuilder()
     .UseAdvancedExtensions()
     .UseTargetBlankUrl()
@@ -38,7 +62,8 @@ builder.Services.AddSingleton<IChatCompletionService>(
     )
 );
 
-builder.Services.AddSingleton<IAiService,AiService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IAiService,AiService>();
 
 var app = builder.Build();
 
@@ -65,16 +90,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.UseSession();
-
+app.UseAuthentication();
 app.UseAuthorization();
-
+app.UseSession();
 app.MapStaticAssets();
-
-app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
-
-
+app.MapControllers();
 app.Run();

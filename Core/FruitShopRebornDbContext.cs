@@ -1,13 +1,13 @@
 using Core.Entities.AiChat;
 using Core.Entities.Users;
 using Core.Entities.Users.Staffs;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Core;
 
-public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext> options) : DbContext(options)
+public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext> options) : IdentityDbContext<User>(options)
 {
-    public DbSet<User> Users { get; set; }
     public DbSet<Customer> Customers { get; set; }
     public DbSet<ShippingInformation> ShippingInformations { get; set; }
     public DbSet<AiConversation> Conversations { get; set; }
@@ -34,18 +34,6 @@ public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext>
     {
         var entity = modelBuilder.Entity<User>();
         entity.UseTptMappingStrategy();
-        entity.HasKey(u => u.Id);
-        entity.Property(u => u.Id).ValueGeneratedOnAdd();
-        entity.HasIndex(u => u.Email).IsUnique();
-
-        entity.Property(u => u.Email)
-            .HasMaxLength(BussinessRuleConstant.EmailMaxLength)
-            .IsUnicode(false)
-            .IsRequired();
-
-        entity.Property(u => u.PasswordHash)
-            .HasMaxLength(BussinessRuleConstant.PasswordHashMaxLength)
-            .IsUnicode(false);
 
         entity.Ignore(u => u.Role);
 
@@ -123,12 +111,6 @@ public class FruitShopRebornDbContext(DbContextOptions<FruitShopRebornDbContext>
 
         entity.Property(s => s.IdentityNumber)
             .HasMaxLength(BussinessRuleConstant.IdentityNumberMaxLength)
-            .IsUnicode(false)
-            .IsFixedLength()
-            .IsRequired();
-
-        entity.Property(s => s.PhoneNumber)
-            .HasMaxLength(BussinessRuleConstant.PhoneNumberLength)
             .IsUnicode(false)
             .IsFixedLength()
             .IsRequired();
